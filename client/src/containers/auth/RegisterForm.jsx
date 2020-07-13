@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm, register } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
+import { check } from '../../modules/user';
+import { withRouter } from 'react-router-dom';
 
-const RegisterForm = () => {
+const RegisterForm = ({ history }) => {
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const { form, auth, authError } = useSelector(({ auth }) => ({
+  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
     form: auth.register,
     auth: auth.auth,
     authError: auth.authError,
+    user: user.user,
   }));
 
   const onChange = (e) => {
@@ -25,8 +29,15 @@ const RegisterForm = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     const { username, password, passwordConfirm } = form;
+    if ([username, password, passwordConfirm].includes('')) {
+      setError('빈 칸을 모두 입력하세요.');
+    }
     if (password !== passwordConfirm) {
-      //error
+      setError('비밀번호가 일치하지 않습니다.');
+      dispatch(changeField({ form: 'register', key: 'password', value: '' }));
+      dispatch(
+        changeField({ form: 'register', key: 'passswordConfirm', value: '' }),
+      );
       return;
     }
     dispatch(register({ username, password }));
@@ -38,23 +49,34 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (authError) {
-      console.log('AUTHERROR');
-      console.log(authError);
+      if (authError.response.status === 409) {
+        setError('이미 존재하는 아이디입니다.');
+        return;
+      }
+      setError('회원가입 실패 관리자에게 문의하세요.');
       return;
     }
     if (auth) {
       console.log('register success');
       console.log(auth);
+      dispatch(check());
     }
-  }, [auth, authError]);
+  }, [auth, authError, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      history.push('/'); //홈으로 이동
+    }
+  }, [history, user]);
   return (
     <AuthForm
       type="register"
       form={form}
       onChange={onChange}
       onSubmit={onSubmit}
+      error={error}
     />
   );
 };
 
-export default RegisterForm;
+export default withRouter(RegisterForm);

@@ -4,13 +4,23 @@ import Joi from 'joi'; // 클라이언트가 request body 중 하나의 항목�
 
 const { ObjectId } = mongoose.Types;
 
-export const checkObjectId = (ctx, next) => {
+export const getPostById = async (ctx, next) => {
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
     ctx.status = 400;
     return;
   }
-  return next();
+  try {
+    const post = await Post.findById(id);
+    if (!post) {
+      ctx.status = 404; //not found
+      return;
+    }
+    ctx.state.post = post;
+    return next();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
 };
 
 export const write = async (ctx) => {
@@ -33,6 +43,7 @@ export const write = async (ctx) => {
     title,
     body,
     tags,
+    user: ctx.state.user,
   });
 
   try {

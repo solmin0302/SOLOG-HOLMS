@@ -9,6 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducers, { rootSaga } from './modules';
 import createSagaMiddleware from 'redux-saga';
+import { tempSetUser, check } from './modules/user';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -16,7 +17,18 @@ const store = createStore(
   composeWithDevTools(applyMiddleware(sagaMiddleware)),
 );
 
+function loadUser() {
+  try {
+    const user = localStorage.getItem('user');
+    if (!user) return;
+    store.dispatch(tempSetUser(user));
+    store.dispatch(check());
+  } catch (e) {
+    console.log('localStorage Not Working');
+  }
+}
 sagaMiddleware.run(rootSaga);
+loadUser();
 
 ReactDOM.render(
   <React.StrictMode>

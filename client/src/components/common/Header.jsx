@@ -49,7 +49,7 @@ const Header = ({ user, onLogout }) => {
       <HeaderBlock>
         <Wrapper>
           <Link to="/" className="logo">
-            Reacters
+            SOLOG-HOLMS
           </Link>
           {user ? (
             <div className="right">

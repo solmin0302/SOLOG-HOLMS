@@ -12,7 +12,7 @@ const PostViewerContainer = ({ match }) => {
     error: post.error,
     loading: loading['post/READ_POST'],
   }));
-
+  console.log(post);
   useEffect(() => {
     dispatch(readPost(postId));
     return () => {

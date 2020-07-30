@@ -65,7 +65,6 @@ const PostViewer = ({ post, loading, error }) => {
   }
 
   const { title, body, user, publishDate, tags } = post;
-  console.log(user);
   return (
     <PostViewerBlock>
       <PostHead>

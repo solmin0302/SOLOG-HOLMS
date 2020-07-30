@@ -1,9 +1,7 @@
 module.exports = {
   extension: ['airbnb', 'plugin:prettier/recommended'],
-  rules: {
-    
-  },
+  rules: {},
   env: {
     browser: true,
-  }
-}
+  },
+};

@@ -10,12 +10,12 @@
 
 <br>
 
-### __*1. user 관리*__
+### __*2. user 관리*__
 
     bCrypt, Json Web Token을 사용하여 유저 정보 암호화
 <br>
 
-### __*2. 상태 관리*__
+### __*3. 상태 관리*__
 
     redux, redux-saga 를 활용하여 상태관리
 <br>

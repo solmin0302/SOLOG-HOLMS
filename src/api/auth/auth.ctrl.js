@@ -22,20 +22,20 @@ export const register = async (ctx) => {
   try {
     const exists = await User.findByUsername(username);
     if (exists) {
-      ctx.status = 409; //confilct
+      ctx.status = 409;
       return;
     }
     const user = new User({
       username,
     });
-    await user.setPassword(password); //비밀번호 설정
-    await user.save(); // 데이터베이스에 저장
+    await user.setPassword(password);
+    await user.save();
 
     ctx.body = user.serialize();
 
     const token = user.generateToken();
     ctx.cookies.set('access_token', token, {
-      maxAge: 1000 * 60 * 60 * 24 * 7, //7days
+      maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
     });
   } catch (e) {
@@ -47,6 +47,7 @@ export const login = async (ctx) => {
 
   if (!username || !password) {
     ctx.status = 401; // unauthorized
+    console.log('check');
     return;
   }
 
